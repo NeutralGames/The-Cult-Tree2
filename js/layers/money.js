@@ -60,8 +60,6 @@ addLayer("m", {
             ["column",[["display-text", function() { return 'depression:' }],
             ["bar","depBar"]]]]],
         "blank",
-        ["display-text", function() { return 'working: '+player.m.working+' / hired: '+player.m.hired+' / job: '+player.m.job+' / promo: '+player.m.promotions }],
-        ["display-text", function() { return 'progress: '+player.m.progress+' / recreation: '+player.m.recreation+' / Depressionlog10: '+Math.floor(Math.log10(player.depression+1)) }],
         ["display-text", function() { 
             let dis = ""
             if (player.m.drain.gt(player.m.max)) dis = "Your Activities Exceed Your Capacity"
