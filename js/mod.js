@@ -4,9 +4,10 @@ let modInfo = {
 	author: "Neutral",
 	pointsName: "faith",
 	modFiles: 
-	["layers/cult.js",
+	["layers/thesis.js",
 	"layers/stats.js",
 	"layers/money.js",
+	"layers/story.js",
 	"tree.js"],
 
 	discordName: "",
@@ -49,6 +50,8 @@ function getPointGen() {
 		return new Decimal(0)
 
 	let gain = new Decimal(1)
+	if (hasUpgrade('t',01)) gain = gain.mul(upgradeEffect('t',01))
+	if (hasUpgrade('t',11)) gain = gain.mul(upgradeEffect('t',11))
 	return gain
 }
 

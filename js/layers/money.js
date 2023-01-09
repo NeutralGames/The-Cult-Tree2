@@ -85,7 +85,7 @@ addLayer("m", {
     infoboxes: {
         job: {
             title: "job",
-            body() { return "job" },
+            body() { return "You have to work to make money. You need money to live. Try not to live to work.<br><br>It currently costs $4 per day to live" },
         },
     },
     bars: {
@@ -144,8 +144,8 @@ addLayer("m", {
             },
             onPurchase() {
                 player.m.unlocked = false
-                player.c.unlocked = true
-                showTab('none')
+                player.t.unlocked = true
+                player.tab = 'b'
             },
         },
     },
@@ -327,21 +327,24 @@ addLayer("m", {
     },
 })
 setInterval(function() {
+    if (hasUpgrade('m',11)) return;
     let drain = new Decimal(0)
     if (player.m.job==1) drain = drain.add(1)
     if (player.m.job==2) drain = drain.add(3)
     if (player.m.recreation) drain = drain.add(1)
     drain = drain.add(Decimal.round(Math.log10(player.depression+1)))
+    if (hasUpgrade('m',11)) drain = new Decimal(0)
     player.m.drain = drain
     
     let earn = player.m.salary[player.m.job]
     earn = earn*(1.05**(player.m.promotions[player.m.job]))
+    if (hasUpgrade('m',11)) earn = new Decimal(0)
     
     let max = player.st.con.mul(2).minus(10)
     player.m.max = max
 
     let rec = max.div(10)
-    if (hasUpgrade('c',11)) rec = rec.add(1)
+    if (hasUpgrade('t',11)) rec = rec.add(1)
 
     if (!player.m.hired&&!player.m.recreation) player.m.working = false
     if (player.st.sta.minus(drain).lt(0)) player.m.working = false
