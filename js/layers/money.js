@@ -276,7 +276,7 @@ addLayer("m", {
             canClick() { return player.m.points.gte(40)},
             style() { 
                 dis = {'background-color':'gray'}
-                if (player.m.points.gte(40)) dis = {'background-color':'green'}
+                if (player.m.points.gte(40)) dis = {'background-color':'yellow'}
                 return dis
             }
         },
@@ -302,7 +302,7 @@ addLayer("m", {
             canClick() { return player.m.points.gte(100)},
             style() { 
                 dis = {'background-color':'gray'}
-                if (player.m.points.gte(100)) dis = {'background-color':'green'}
+                if (player.m.points.gte(100)) dis = {'background-color':'yellow'}
                 return dis
             }
         },
