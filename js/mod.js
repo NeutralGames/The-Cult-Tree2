@@ -8,6 +8,8 @@ let modInfo = {
 	"layers/stats.js",
 	"layers/money.js",
 	"layers/story.js",
+	"layers/life.js",
+	"layers/spooky.js",
 	"tree.js"],
 
 	discordName: "",
@@ -40,7 +42,6 @@ function getStartPoints(){
 // Determines if it should show points/sec
 function canGenPoints(){
 	let pt = false
-	if (hasUpgrade('m',11)) pt = true
 	return pt
 }
 

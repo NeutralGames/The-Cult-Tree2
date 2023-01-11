@@ -9,12 +9,16 @@ addLayer("b", {
     tooltip() {
       return "story"
     },
-    color: "#a06060",
+    color: "#59adf6",
     requires: new Decimal(0), // Can be a function that takes requirement increases into account
     resource: "",
     type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     exponent: 0.5, // Prestige currency exponent
     layerShown() { return hasUpgrade('m',11) },
+    tabFormat: [
+        ["infobox","story"],
+        ["row",["upgrade",11],["upgrade",11],["upgrade",11],["upgrade",11],["upgrade",11],["upgrade",11],]
+    ],
     infoboxes: {
         story: {
             title: "Start",

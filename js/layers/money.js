@@ -14,7 +14,7 @@ addLayer("m", {
         max: new Decimal(0),
         clickables: {[11]: "Apply",[12]: "Apply",[21]:"Off"}
     }},
-    row: 0,
+    row: 20,
     position: 1,
     color: "#4BDC13",
     requires: new Decimal(10),
@@ -144,7 +144,7 @@ addLayer("m", {
             },
             onPurchase() {
                 player.m.unlocked = false
-                player.t.unlocked = true
+                player.l.unlocked = true
                 player.tab = 'b'
             },
         },

@@ -26,40 +26,29 @@ addLayer("t", {
     hotkeys: [
         {key: "t", description: "t: reset for thesis", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
-    layerShown(){return hasUpgrade('m',11)},
+    layerShown(){return false},
     tabFormat: [
         "main-display",
         "prestige-button",
         ["infobox", "thesis"],
-        ["microtabs", "cult"],      
+        ["upgrade-tree",[
+            [00,00,11,00,01],
+            [00,21,22,23,00],
+            [00,31,32,00,00],
+            [00,00,00,00,00],
+            [00,00,00,00,00],
+            [00,00,00,00,00],
+            [00,00,00,00,00],
+            [00,00,00,00,00],
+            [00,00,00,00,00],
+            [00,00,00,00,00],
+            [00,00,00,00,00],
+        ]],    
     ],
     infoboxes: {
         thesis: {
             title: "thesis",
             body() { return "thesis" },
-        },
-    },
-    microtabs: {
-        cult: {
-            upg: {
-                content: [
-                    "blank",
-                    ["upgrade-tree",[
-                        [00,00,11,00,01],
-                        [00,21,22,23,00],
-                        [00,31,32,00,00],
-                        [00,00,00,00,00],
-                        [00,00,00,00,00],
-                        [00,00,00,00,00],
-                        [00,00,00,00,00],
-                        [00,00,00,00,00],
-                        [00,00,00,00,00],
-                        [00,00,00,00,00],
-                        [00,00,00,00,00],
-                    ]],
-                    
-                ]
-            },
         },
     },
     upgrades: {
