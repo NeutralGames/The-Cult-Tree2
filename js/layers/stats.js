@@ -19,6 +19,7 @@ addLayer("st", {
         race: 0,
         races: ["Human","Orc","Halfling","Dwarf","Elf","Aasimar","Tiefling"],
         skill: {
+            none:{level:0,progress:0,next:1,stat:"none"},
             mining:{level:0,progress:0,next:100,stat:"str"},
             smithing:{level:0,progress:0,next:100,stat:"str"}, 
             persuasion:{level:0,progress:0,next:100,stat:"cha"}, 
@@ -72,8 +73,8 @@ addLayer("st", {
         ["display-text", function() { return `SKILLS` },{ "font-size": "32px" }],
         "h-line",
         ["display-text", function() { return `STR` },{  "color": "#ff6961","font-size": "24px" }],
-        ["display-text", function() { return `Mining: ${player.st.skill.mining.level}<br><h6>Progress: ${format(player.st.skill.mining.progress)}/${format(player.st.skill.mining.next)}</h6>` }],"blank",
-        ["display-text", function() { return `Smithing: ${player.st.skill.smithing.level}<br><h6>Progress: ${format(player.st.skill.smithing.progress)}/${format(player.st.skill.smithing.next)}</h6>` }],"blank",
+        ["display-text", function() { return `Mining: ${player.st.skill.mining.level}<br><h6>Progress: ${format(player.st.skill.mining.progress)}/${format(player.st.skill.mining.next)}<br>Best: ${player.reinc.skill.mining}</h6>` }],"blank",
+        ["display-text", function() { return `Smithing: ${player.st.skill.smithing.level}<br><h6>Progress: ${format(player.st.skill.smithing.progress)}/${format(player.st.skill.smithing.next)}<br>Best: ${player.reinc.skill.smithing}</h6>` }],"blank",
         "h-line",
         ["display-text", function() { return `DEX` },{ "color": "#59adf6","font-size": "24px" }],
         "h-line",
@@ -84,8 +85,8 @@ addLayer("st", {
         ["display-text", function() { return `WIS` },{ "color": "#ffb480","font-size": "24px" }],
         "h-line",
         ["display-text", function() { return `CHA` },{ "color": "#c780e8","font-size": "24px" }],
-        ["display-text", function() { return `Persuasion: ${player.st.skill.persuasion.level}<br><h6>Progress: ${format(player.st.skill.persuasion.progress)}/${format(player.st.skill.persuasion.next)}</h6>` }],"blank",
-        ["display-text", function() { return `Deception: ${player.st.skill.deception.level}<br><h6>Progress: ${format(player.st.skill.deception.progress)}/${format(player.st.skill.deception.next)}</h6>` }],"blank",
+        ["display-text", function() { return `Persuasion: ${player.st.skill.persuasion.level}<br><h6>Progress: ${format(player.st.skill.persuasion.progress)}/${format(player.st.skill.persuasion.next)}<br>Best: ${player.reinc.skill.persuasion}</h6>` }],"blank",
+        ["display-text", function() { return `Deception: ${player.st.skill.deception.level}<br><h6>Progress: ${format(player.st.skill.deception.progress)}/${format(player.st.skill.deception.next)}<br>Best: ${player.reinc.skill.deception}</h6>` }],"blank",
     ],
     bars: {
         staBar: {

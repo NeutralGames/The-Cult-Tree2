@@ -34,7 +34,7 @@ let winText = `Congratulations! You have reached the end and beaten this game, b
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
 // (The ones here are examples, all official functions are already taken care of)
-var doNotCallTheseFunctionsEveryTick = ["blowUpEverything","jobLoop"]
+var doNotCallTheseFunctionsEveryTick = ["blowUpEverything","jobLoop","skillXP","skillXP(skill)"]
 
 function getStartPoints(){
     return new Decimal(modInfo.initialStartPoints)
@@ -109,3 +109,18 @@ function parseDays (value){
 setInterval(function() {
 	player.age++
 },1000)
+
+function skillXP(test) {
+	let gain = new Decimal(1)
+	let mult = new Decimal(1)
+	mult = player.st[player.st.skill[test].stat]
+
+	gain = gain*mult
+	player.st.skill[test].progress = player.st.skill[test].progress+gain
+	console.log(player.st.skill[test].progress>=player.st.skill[test].next)
+	if (player.st.skill[test].progress>=player.st.skill[test].next) {
+		player.st.skill[test].progress = 0
+		player.st.skill[test].level++
+		player.st.skill[test].next = player.st.skill[test].next*1.05
+	}
+}

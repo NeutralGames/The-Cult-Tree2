@@ -23,6 +23,10 @@ addNode("reinc", {
         player.reinc.skill.deception = Math.max(player.reinc.skill.deception,player.st.skill.deception.level)
         layerDataReset('l')
         layerDataReset('st')
+        player.st.skill.mining.next = 100*(0.99**player.reinc.skill.mining)
+        player.st.skill.smithing.next = 100*(0.99**player.reinc.skill.smithing)
+        player.st.skill.persuasion.next = 100*(0.99**player.reinc.skill.persuasion)
+        player.st.skill.deception.next = 100*(0.99**player.reinc.skill.deception)
     },
     
 }

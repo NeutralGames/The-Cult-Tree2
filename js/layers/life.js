@@ -9,12 +9,8 @@ addLayer("l", {
         drain:0,
         xp:0,
         rec:0,
-        stat1:"none",
-        stat2:"none",
-        minstat1:10,
-        minstat2:10,
-        scale1:1,
-        scale2:1,
+        skill:"none",
+        scale:0,
         gridy: 101,
         actions: 1,
     }},
@@ -126,12 +122,8 @@ addLayer("l", {
             drain:0,
             xp:0,
             rec:0,
-            stat1:"none",
-            stat2:"none",
-            minstat1:10,
-            minstat2:10,
-            scale1:1,
-            scale2:1,
+            skill:"none",
+            scale:0,
         }},
         getCanClick(data, id) {
           return true
@@ -143,12 +135,8 @@ addLayer("l", {
                 drain:player.l.drain,
                 xp:player.l.xp,
                 rec:player.l.rec,
-                stat1:player.l.stat1,
-                stat2:player.l.stat2,
-                minstat1:player.l.minstat1,
-                minstat2:player.l.minstat2,
-                scale1:player.l.scale1,
-                scale2:player.l.scale2,
+                skill:player.l.skill,
+                scale:player.l.scale,
             })
         },
         getDisplay(data, id) {
@@ -173,23 +161,22 @@ addLayer("l", {
         let drain = player.l.grid[id].drain
         let xp = player.l.grid[id].xp
         let rec = player.l.grid[id].rec
-        let stat1 = player.st[player.l.grid[id].stat1]
-        let stat2 = player.st[player.l.grid[id].stat2]
-        let minstat1 = player.l.grid[id].minstat1
-        let minstat2 = player.l.grid[id].minstat2
-        let scale1 = player.l.grid[id].scale1
-        let scale2 = player.l.grid[id].scale2
+        let test = player.l.grid[id].skill
+        let scale = player.l.grid[id].scale
         let max = player.st.con.mul(2).minus(10)
-        let endearn = earn+((scale1*(stat1-minstat1))+(scale2*(stat2-minstat2)))
+        let skill = player.st.skill[player.l.grid[id].skill].level
+        let endearn = earn+(skill*scale)
         let acttime = (new Decimal(1).div(Math.log10(player.st.dex)))
         if (1==1) acttime = acttime*(Math.max(1,(2**((player.age-18250)/3650))))
 
-        if (player.l.resetTime>=acttime) {
+        if (player.l.resetTime>=acttime&&player.l.unlocked) {
             player.l.resetTime = 0
             if (!player.l.rest&&player.st.sta.minus(drain).gte(0)) {
                 addPoints('l',endearn)
+                console.log(endearn)
                 player.st.xp = player.st.xp.add(xp)
                 player.st.sta = player.st.sta.minus(drain)
+                skillXP(test)
                 if (player.st.sta.add(rec).gt(max)) player.st.sta = max
                 if (player.st.sta.add(rec).lte(max)) player.st.sta = player.st.sta.add(rec)
                 player.l.gridy++
@@ -224,13 +211,9 @@ addLayer("l", {
                 player.l.earn = 0
                 player.l.drain = 0
                 player.l.xp = 0
-                player.l.rec = 0
-                player.l.stat1 = "str"
-                player.l.stat2 = "str"
-                player.l.minstat1 = 10
-                player.l.minstat2 = 10
-                player.l.scale1 = 1
-                player.l.scale2 = 1
+                player.l.rec = 0,
+                player.l.skill = "none"
+                player.l.scale = 0
             },
             canClick() {
                 return true
@@ -246,7 +229,7 @@ addLayer("l", {
                 let b = "<br>+"+format(3)+" gold"
                 let c = "<br>-1 stamina"
                 let d = "<br>"
-                let e = "<br>--/--"
+                let e = "<br>--"
                 let f = "<br>req: --"
                 let g = "<br>"
                 return a+b+c+d+e+f+g
@@ -257,12 +240,8 @@ addLayer("l", {
                 player.l.drain = 1
                 player.l.xp = 0
                 player.l.rec = 0
-                player.l.stat1 = "none"
-                player.l.stat2 = "none"
-                player.l.minstat1 = 10
-                player.l.minstat2 = 10
-                player.l.scale1 = 1
-                player.l.scale2 = 1
+                player.l.skill = "none"
+                player.l.scale = 0
             },
             canClick() {
                 return true
@@ -275,10 +254,10 @@ addLayer("l", {
             title: "Beg",
             display() { 
                 let a = "<br>click to assign"
-                let b = "<br>+"+format(new Decimal(2).add(new Decimal(0.20).mul(player.st.cha.minus(10))))+" gold"
+                let b = "<br>+"+format(2+(player.st.skill.persuasion.level*0.25))+" gold"
                 let c = "<br>-1 stamina"
                 let d = "<br>"
-                let e = "<br>+CHA/--"
+                let e = "<br>+persuasion"
                 let f = "<br>req: --"
                 let g = "<br>"
                 return a+b+c+d+e+f+g
@@ -289,12 +268,8 @@ addLayer("l", {
                 player.l.drain = 1
                 player.l.xp = 0
                 player.l.rec = 0
-                player.l.stat1 = "cha"
-                player.l.stat2 = "none"
-                player.l.minstat1 = 10
-                player.l.minstat2 = 10
-                player.l.scale1 = 0.20
-                player.l.scale2 = 1.00
+                player.l.skill = "persuasion"
+                player.l.scale = 0.25
             },
             canClick() {
                 return player.st.str>=10&&player.st.con>=10
@@ -321,12 +296,8 @@ addLayer("l", {
                 player.l.drain = 0
                 player.l.xp = 0
                 player.l.rec = 2
-                player.l.stat1 = "none"
-                player.l.stat2 = "none"
-                player.l.minstat1 = 10
-                player.l.minstat2 = 10
-                player.l.scale1 = 1
-                player.l.scale2 = 1
+                player.l.skill = "none"
+                player.l.scale = 0
             },
             canClick() {
                 return true
