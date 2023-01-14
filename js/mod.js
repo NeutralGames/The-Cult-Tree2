@@ -9,6 +9,7 @@ let modInfo = {
 	"layers/money.js",
 	"layers/story.js",
 	"layers/life.js",
+	"layers/reinc.js",
 	"layers/spooky.js",
 	"tree.js"],
 
@@ -60,11 +61,15 @@ function getPointGen() {
 function addedPlayerData() { return {
 	happiness: 100,
 	depression: 0,
+	age: 12873,
 }}
 
 // Display extra things at the top of the page
 var displayThings = [
-	function() { if (player.points.lte(0)) return "Late Stage Capitalism Demands Your Labor To Sustain Life" }
+	function() { if (player.points.lte(0)&&!hasUpgrade('m',11)) return "Late Stage Capitalism Demands Your Labor To Sustain Life" },
+	function() { return "You Are "+parseDays(player.age)+" old" },
+	function() { if (player.age>18250) return "Your Age Slows Your Actions By "+format(2**((player.age-18250)/3650))+"x"}
+	
 ]
 
 // Determines when the game "ends"
@@ -90,3 +95,17 @@ function maxTickLength() {
 // you can cap their current resources with this.
 function fixOldSave(oldVersion){
 }
+
+function parseDays (value){ 
+    var year, days;
+         
+    year = value >= 365 ? Math.floor(value / 365) : 0;
+    value = year ? value - (year*365) : value;
+        
+    days = value < 365 ? Math.floor((value % 365)) : 0;
+        
+    return year+" years, "+days+" days"   
+}
+setInterval(function() {
+	player.age++
+},1000)
