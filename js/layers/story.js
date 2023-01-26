@@ -2,7 +2,7 @@ addLayer("b", {
     name: "book",
     symbol: "b",
     row: "side",
-    position: 3,
+    position: 1,
     startData() { return {
         unlocked: true,
     }},

@@ -2,7 +2,7 @@ addLayer("st", {
     name: "Stats",
     symbol: "st",
     row: "side",
-    position: 1,
+    position: 3,
     startData() { return {
         unlocked: true,
         points: new Decimal(0),
@@ -20,8 +20,13 @@ addLayer("st", {
         races: ["Human","Orc","Halfling","Dwarf","Elf","Aasimar","Tiefling"],
         skill: {
             none:{level:0,progress:0,next:1,stat:"none"},
+
             mining:{level:0,progress:0,next:100,stat:"str"},
+            smelting:{level:0,progress:0,next:100,stat:"str"},
             smithing:{level:0,progress:0,next:100,stat:"str"}, 
+
+
+
             persuasion:{level:0,progress:0,next:100,stat:"cha"}, 
             deception:{level:0,progress:0,next:100,stat:"cha"},
         },

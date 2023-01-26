@@ -11,6 +11,7 @@ let modInfo = {
 	"layers/life.js",
 	"layers/reinc.js",
 	"layers/spooky.js",
+	"layers/inv.js",
 	"tree.js"],
 
 	discordName: "",
