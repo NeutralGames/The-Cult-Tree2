@@ -4,14 +4,10 @@ let modInfo = {
 	author: "Neutral",
 	pointsName: "faith",
 	modFiles: 
-	["layers/thesis.js",
-	"layers/stats.js",
-	"layers/money.js",
-	"layers/story.js",
-	"layers/life.js",
-	"layers/reinc.js",
+	["layers/prologue.js",
+	"layers/book.js",
+	"layers/pause.js",
 	"layers/spooky.js",
-	"layers/inv.js",
 	"tree.js"],
 
 	discordName: "",
@@ -35,7 +31,7 @@ let winText = `Congratulations! You have reached the end and beaten this game, b
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
 // (The ones here are examples, all official functions are already taken care of)
-var doNotCallTheseFunctionsEveryTick = ["blowUpEverything","jobLoop","skillXP","skillXP(skill)"]
+var doNotCallTheseFunctionsEveryTick = ["blowUpEverything"]
 
 function getStartPoints(){
     return new Decimal(modInfo.initialStartPoints)
@@ -53,24 +49,19 @@ function getPointGen() {
 		return new Decimal(0)
 
 	let gain = new Decimal(1)
-	if (hasUpgrade('t',01)) gain = gain.mul(upgradeEffect('t',01))
-	if (hasUpgrade('t',11)) gain = gain.mul(upgradeEffect('t',11))
 	return gain
 }
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
-	happiness: 100,
-	depression: 0,
 	age: 12873,
+	pause: false
 }}
 
 // Display extra things at the top of the page
 var displayThings = [
-	function() { if (player.points.lte(0)&&!hasUpgrade('m',11)) return "Late Stage Capitalism Demands Your Labor To Sustain Life" },
 	function() { return "You Are "+parseDays(player.age)+" old" },
-	function() { if (player.age>18250) return "Your Age Slows Your Actions By "+format(2**((player.age-18250)/3650))+"x"}
-	
+	function() { if(player.pause) return '<b style="color:#ff6961">TIME IS PAUSED ---><br>'}
 ]
 
 // Determines when the game "ends"
@@ -105,23 +96,10 @@ function parseDays (value){
         
     days = value < 365 ? Math.floor((value % 365)) : 0;
         
-    return year+" years, "+days+" days"   
+    return year+" years and "+days+" days"   
 }
-setInterval(function() {
-	player.age++
-},1000)
-
-function skillXP(test) {
-	let gain = new Decimal(1)
-	let mult = new Decimal(1)
-	mult = player.st[player.st.skill[test].stat]
-
-	gain = gain*mult
-	player.st.skill[test].progress = player.st.skill[test].progress+gain
-	console.log(player.st.skill[test].progress>=player.st.skill[test].next)
-	if (player.st.skill[test].progress>=player.st.skill[test].next) {
-		player.st.skill[test].progress = 0
-		player.st.skill[test].level++
-		player.st.skill[test].next = player.st.skill[test].next*1.05
-	}
+function performAction() {
+	if (!player.pause) player.age++
 }
+
+setInterval(performAction,1000)

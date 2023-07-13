@@ -3,6 +3,7 @@ addLayer("m", {
     symbol: "$",
     startData() { return {
         unlocked: true,
+        deactivated: false,
 		points: new Decimal(300),
         working: false,
         hired: false,
@@ -11,14 +12,17 @@ addLayer("m", {
         promotions: [0,0,0],
         progress: [0,0,0],
         drain: new Decimal(0),
-        max: new Decimal(0),
+        max: new Decimal(10),
+        stamina: new Decimal(10),
+        depression: 0,
+        happiness: 100,
         clickables: {[11]: "Apply",[12]: "Apply",[21]:"Off"}
     }},
     row: 20,
     position: 1,
     color: "#4BDC13",
     requires: new Decimal(10),
-    resource: "Money",
+    resource: "Dollars",
     baseResource: "none",
     baseAmount() {return null},
     type: "none",
@@ -38,15 +42,6 @@ addLayer("m", {
     tabFormat: [
         "main-display",
         ["infobox", "job"],
-        ["display-text", function() {
-            let str = `<b style="color: #ff6961">${player.st.str}</b>`
-            let dex = `<b style="color: #59adf6">${player.st.dex}</b>`
-            let con = `<b style="color: #f8f38d">${player.st.con}</b>`
-            let int = `<b style="color: #42d6a4">${player.st.int}</b>`
-            let wis = `<b style="color: #ffb480">${player.st.wis}</b>`
-            let cha = `<b style="color: #c780e8">${player.st.cha}</b>`
-            return `STATS: `+str+" "+dex+" "+con+" "+int+" "+wis+" "+cha
-        }],
         ["row",[
         ["column",[["display-text", function() { return 'stamina:' }],
         ["bar","staBar"]]],
@@ -67,7 +62,7 @@ addLayer("m", {
         }],
         "blank",
         ["display-text", function() { if (player.m.points.eq(0)) return 'You are broke, losing 1 happiness from going without' }],
-        ["display-text", function() { if (Math.floor(Math.log10(player.depression+1))>0) return 'You are depressed, everything costs '+Math.floor(Math.log10(player.depression+1))+' extra stamina' }],
+        ["display-text", function() { if (Math.floor(Math.log10(player.m.depression+1))>0) return 'You are depressed, everything costs '+Math.floor(Math.log10(player.m.depression+1))+' extra stamina' }],
         "blank",
         "upgrades",
         ["display-text", function() { return 'jobs' }],
@@ -85,7 +80,7 @@ addLayer("m", {
     infoboxes: {
         job: {
             title: "job",
-            body() { return "You have to work to make money. You need money to live. Try not to live to work.<br><br>It currently costs $4 per day to live" },
+            body() { return `You have to work to make money. You need money to live. Try not to live to work.<br><br>It currently costs <b style="color: #4BDC13">$4</b> per day to live` },
         },
     },
     bars: {
@@ -96,8 +91,8 @@ addLayer("m", {
             fillStyle: {'background-color' : "#f8f38d"},
             baseStyle: {'background-color' : "#696969"},
             textStyle: {'color': '#04e050'},
-            progress() { return player.st.sta.div(player.st.con.mul(2).minus(10)) },
-            display() { return Math.round(player.st.sta)+" / "+player.st.con.mul(2).minus(10)},
+            progress() { return player.m.stamina.div(10) },
+            display() { return Math.round(player.m.stamina)+" / 10"},
         },
         promoBar: {
             direction: RIGHT,
@@ -116,8 +111,8 @@ addLayer("m", {
             fillStyle: {'background-color' : "#f8f38d"},
             baseStyle: {'background-color' : "#696969"},
             textStyle: {'color': '#04e050'},
-            progress() { return player.happiness/100 },
-            display() { return player.happiness+" / 100"},
+            progress() { return player.m.happiness/100 },
+            display() { return player.m.happiness+" / 100"},
         },
         depBar: {
             direction: RIGHT,
@@ -126,26 +121,29 @@ addLayer("m", {
             fillStyle: {'background-color' : "#f8f38d"},
             baseStyle: {'background-color' : "#696969"},
             textStyle: {'color': '#04e050'},
-            progress() { return player.depression/100 },
-            display() { return player.depression+" / 100"},
+            progress() { return player.m.depression/100 },
+            display() { return player.m.depression+" / 100"},
         },
     },
     upgrades: {
         11: {
             cost: true,
-            canAfford() {return player.depression==100},
-            unlocked() {return player.depression>0},
+            canAfford() {return player.m.depression==100},
+            unlocked() {return player.m.depression>0},
             fullDisplay() {
                 let dis = "Little Bit Stressed"
-                if (player.depression>40) dis = "kinda miserable"
-                if (player.depression>70) dis = "maybe capitalism is f***ed"
-                if (player.depression==100) dis = "give up"
+                if (player.m.depression>40) dis = "kinda miserable"
+                if (player.m.depression>70) dis = "maybe capitalism is f***ed"
+                if (player.m.depression==100) dis = "give up"
                 return dis
             },
             onPurchase() {
                 player.m.unlocked = false
-                player.l.unlocked = true
+                player.m.deactivated = true
+                player.b.unlocked = true
                 player.tab = 'b'
+                player.age = 6009
+                player.stop.unlocked = true
             },
         },
     },
@@ -270,8 +268,8 @@ addLayer("m", {
             },
             onClick() { 
                 player.m.points = player.m.points.minus(40)
-                if (player.happiness+5<100) player.happiness = player.happiness+5
-                if (player.happiness+5>=100) player.happiness = 100
+                if (player.m.happiness+5<100) player.m.happiness = player.m.happiness+5
+                if (player.m.happiness+5>=100) player.m.happiness = 100
             },
             canClick() { return player.m.points.gte(40)},
             style() { 
@@ -296,8 +294,8 @@ addLayer("m", {
             },
             onClick() { 
                 player.m.points = player.m.points.minus(100)
-                if (player.depression-10>0) player.depression = player.depression-10
-                if (player.depression-10<=0) player.depression = 0
+                if (player.m.depression-10>0) player.m.depression = player.m.depression-10
+                if (player.m.depression-10<=0) player.m.depression = 0
             },
             canClick() { return player.m.points.gte(100)},
             style() { 
@@ -325,14 +323,15 @@ addLayer("m", {
             style: {'background-color': 'gray'},
         },
     },
-})
+    })
+    
 setInterval(function() {
     if (hasUpgrade('m',11)) return;
     let drain = new Decimal(0)
     if (player.m.job==1) drain = drain.add(1)
     if (player.m.job==2) drain = drain.add(3)
     if (player.m.recreation) drain = drain.add(1)
-    drain = drain.add(Decimal.round(Math.log10(player.depression+1)))
+    drain = drain.add(Decimal.round(Math.log10(player.m.depression+1)))
     if (hasUpgrade('m',11)) drain = new Decimal(0)
     player.m.drain = drain
     
@@ -340,38 +339,38 @@ setInterval(function() {
     earn = earn*(1.05**(player.m.promotions[player.m.job]))
     if (hasUpgrade('m',11)) earn = new Decimal(0)
     
-    let max = player.st.con.mul(2).minus(10)
+    let max = new Decimal(10)
     player.m.max = max
-
+    
     let rec = max.div(10)
-    if (hasUpgrade('t',11)) rec = rec.add(1)
-
+    if (hasUpgrade('m',11)) rec = rec.add(1)
+    
     if (!player.m.hired&&!player.m.recreation) player.m.working = false
-    if (player.st.sta.minus(drain).lt(0)) player.m.working = false
-
-    if (player.m.working&&player.m.hired&&player.st.sta.minus(drain).gte(0)) {
+    if (player.m.stamina.minus(drain).lt(0)) player.m.working = false
+    
+    if (player.m.working&&player.m.hired&&player.m.stamina.minus(drain).gte(0)) {
         addPoints('m',earn)
         player.m.progress[player.m.job]++
-        if (player.happiness>0) player.happiness--
+        if (player.m.happiness>0) player.m.happiness--
     }
-    if (player.m.working&&player.m.recreation&&player.st.sta.minus(drain).gte(0)) {
-        if (player.happiness<100) player.happiness++
+    if (player.m.working&&player.m.recreation&&player.m.stamina.minus(drain).gte(0)) {
+        if (player.m.happiness<100) player.m.happiness++
     }
-    if (player.m.working&&player.st.sta.minus(drain).gte(0)) player.st.sta = player.st.sta.minus(drain)
-
-    if (player.m.working==false&&player.st.sta.lt(max)) {
-        if (player.st.sta.add(rec).gt(max)) player.st.sta = max
-        if (player.st.sta.add(rec).lte(max)) player.st.sta = player.st.sta.add(rec)
+    if (player.m.working&&player.m.stamina.minus(drain).gte(0)) player.m.stamina = player.m.stamina.minus(drain)
+    
+    if (player.m.working==false&&player.m.stamina.lt(max)) {
+        if (player.m.stamina.add(rec).gt(max)) player.m.stamina = max
+        if (player.m.stamina.add(rec).lte(max)) player.m.stamina = player.m.stamina.add(rec)
     }
     if (player.m.hired||player.m.recreation) {
-        if (player.st.sta.gte(max)) player.m.working = true
+        if (player.m.stamina.gte(max)) player.m.working = true
     }
     if (player.m.progress[player.m.job]>=(100*(1.1^(player.m.promotions[player.m.job])))) {
         player.m.promotions[player.m.job]++
         player.m.progress[player.m.job] = 0
     }
-    if(player.depression<100) player.depression = player.depression+(Math.round(2-(Math.log10(player.happiness+1))))
-    if(player.depression>100) player.depression = 100
+    if(player.m.depression<100) player.m.depression = player.m.depression+(Math.round(2-(Math.log10(player.m.happiness+1))))
+    if(player.m.depression>100) player.m.depression = 100
     if(player.m.points.gt(0)) addPoints('m',-4)
-    if(player.m.points.lte(0)&&player.happiness>0) player.happiness--
-},1000)
+    if(player.m.points.lte(0)&&player.m.happiness>0) player.m.happiness--
+    },1000)
